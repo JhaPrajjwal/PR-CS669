@@ -51,9 +51,9 @@ def plot_contour(mu,conv_mat,x,y):
     for i in range(len(X)):
         temp = []
         for j in range(len(X[0])):
-            temp.append(Ax.discriminant_func([X[i][j],Y[i][j]],mu,conv_mat,case))
+            temp.append(Ax.discriminant_func([X[i][j],Y[i][j]],mu,conv_mat,case)[0][0])
         Z.append(temp)
-        
+    # print(Z.shape)
     plt.contour(X, Y, Z,zorder=100,alpha=0.5,colors=['black'])
 
 
@@ -123,7 +123,7 @@ for i in range(2):
     for j in range(2):
         conv_mat[i][j] = (conv_mat1[i][j]+conv_mat2[i][j]+conv_mat3[i][j])/3
 
-or i in range(len(test1[0])):
+for i in range(len(test1[0])):
     out = classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,conv_mat)
     conf_mat[0][out] += 1
     if out == 0:

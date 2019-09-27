@@ -72,21 +72,28 @@ def discriminant_func(v, mu, conv_mat, case):
     if case == 1:
         return (-1 * pow(euclidean_norm(v, mu), 2) ) / (2*conv_mat[0][0])
         
-    elif case == 2:
-        temp = [v[0]-mu[0], v[1]-mu[0]]
-        return (-1 * mat_mul(mat_mul(temp, conv_mat), temp) ) / 2
-
-    inv = mat_inverse(conv_mat)
-    mean_np = np.asarray([mean])
-    meannpt = np.transpose(meannp)
-    x = np.array([v])
-    xt = np.transpose(x)
-    temp = np.dot(x,inv)
-    temp = np.dot(temp, xt)
-    val = temp[0][0]
-    val1 = -val/2
-    temp = np.dot(inv, np.transpose(meannp))
-    
+    else:
+        inv = mat_inverse(conv_mat)
+        meannp = np.asarray([mu])
+        meannpt = np.transpose(meannp)
+        x = np.array([v])
+        xt = np.transpose(x)
+        temp = np.dot(x,inv)
+        temp = np.dot(temp, xt)
+        val = temp[0][0]
+        val1 = -val/2
+        # print(inv.shape, meannpt.shape)
+        temp = np.dot(inv, np.transpose(meannp))
+        temp = np.transpose(temp)
+        temp = np.dot(temp, np.transpose(x))
+        val = val1 + temp
+        val1 = np.dot(meannp, inv)
+        val1 = np.dot(val1, meannpt)
+        val2 = math.log(np.linalg.det(conv_mat))
+        val1 = val1 + val2
+        val1 = -val1/2
+        val = val + val1
+        return val
 
 
 
