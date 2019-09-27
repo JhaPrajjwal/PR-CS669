@@ -10,8 +10,8 @@ def get_data(filename):
             X.append(float(x))
             Y.append(float(y))
 
-    random.shuffle(X)
-    random.shuffle(Y)
+    # random.shuffle(X)
+    # random.shuffle(Y)
     train_X = X[:(3*len(X))//4]
     test_X = X[(3*len(X))//4:]
     train_Y = Y[:(3*len(Y))//4]

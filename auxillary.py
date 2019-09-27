@@ -38,3 +38,4 @@ def discriminant_func(v, mu, var):
     return (-1 * pow(euclidean_norm(v, mu), 2) ) / (2*var)
 
 
+
