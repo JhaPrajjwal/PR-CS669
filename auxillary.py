@@ -27,6 +27,16 @@ def avg_var(data):
     avg_variane = sum(var)/float(len(var))
     return avg_variane
 
+
+def mat_inverse(arr):
+    mat = np.array(arr)
+    return np.linalg.inv(mat)
+
+def mat_mult(mat1, mat2):
+    a = np.array(mat1)
+    b = np.array(mat2)
+    return np.dot(a,b)
+
 def euclidean_norm(v, mu):
     val = 0
     for i in range(len(mu)):
@@ -35,8 +45,15 @@ def euclidean_norm(v, mu):
     return math.sqrt(val)
 
 
-def discriminant_func(v, mu, var):
-    return (-1 * pow(euclidean_norm(v, mu), 2) ) / (2*var)
+def discriminant_func(v, mu, conv_mat, case):
+
+    if case == 1:
+        return (-1 * pow(euclidean_norm(v, mu), 2) ) / (2*conv_mat[0][0])
+        
+    elif case == 2:
+        temp = [v[0]-mu[0], v[1]-mu[0]]
+        return (-1 * mat_mul(mat_mul(temp, conv_mat), temp) ) / 2
+
 
 
 def accuracy(conf_matrix):
@@ -78,11 +95,3 @@ def f_score(conf_matrix, i):
 
     return (2*P*R)/(P+R)
 
-def mat_inverse(arr):
-    mat = np.array(arr)
-    return np.linalg.inv(mat)
-
-def mat_mult(mat1, mat2):
-    a = np.array(mat1)
-    b = np.array(mat2)
-    return np.dot(a,b)

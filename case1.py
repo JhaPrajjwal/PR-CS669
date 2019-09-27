@@ -10,15 +10,16 @@ class3 = [[],[]]
 conf_mat = [[0,0,0],[0,0,0],[0,0,0]]
 
 # Real Data
+case = 1
 range_x = []
 range_y = []
 step = 0
 file = ""
 
-def classify(v, mu1, mu2, mu3, var):
-    w1 = Ax.discriminant_func([v[0],v[1]], mu1, var)
-    w2 = Ax.discriminant_func([v[0],v[1]], mu2, var)
-    w3 = Ax.discriminant_func([v[0],v[1]], mu3, var)
+def classify(v, mu1, mu2, mu3, conv_mat):
+    w1 = Ax.discriminant_func([v[0],v[1]], mu1, conv_mat, case)
+    w2 = Ax.discriminant_func([v[0],v[1]], mu2, conv_mat, case)
+    w3 = Ax.discriminant_func([v[0],v[1]], mu3, conv_mat, case)
 
     if w1 >= w2 and w1 >= w3:
         return 0
@@ -28,7 +29,7 @@ def classify(v, mu1, mu2, mu3, var):
         return 2
 
 
-def plot_contour(mu,var,x,y):
+def plot_contour(mu,conv_mat,x,y):
     min_x = 100000000
     min_y = 100000000
     max_x = -100000000
@@ -50,14 +51,14 @@ def plot_contour(mu,var,x,y):
     for i in range(len(X)):
         temp = []
         for j in range(len(X[0])):
-            temp.append(Ax.discriminant_func([X[i][j],Y[i][j]],mu,var))
+            temp.append(Ax.discriminant_func([X[i][j],Y[i][j]],mu,conv_mat,case))
         Z.append(temp)
         
     plt.contour(X, Y, Z,zorder=100,alpha=0.5,colors=['black'])
 
 
 
-def decision_boundary(val,mu1,mu2,mu3,avg_cov):
+def decision_boundary(val,mu1,mu2,mu3,conv_mat):
 
     points_x = [[],[],[]]
     points_y = [[],[],[]]
@@ -66,7 +67,7 @@ def decision_boundary(val,mu1,mu2,mu3,avg_cov):
     while start < float(range_x[1]):
         start_j = float(range_y[0])
         while start_j < float(range_y[1]):
-            out = classify([start, start_j], mu1, mu2, mu3, avg_cov)
+            out = classify([start, start_j], mu1, mu2, mu3, conv_mat)
             points_x[out].append(start)
             points_y[out].append(start_j)
             start_j += val
@@ -116,6 +117,9 @@ avg_var_2 = Ax.avg_var(train2)
 avg_var_3 = Ax.avg_var(train3)
 
 avg_cov = (avg_var_1 + avg_var_2 + avg_var_3)/3
+
+conv_mat = [[avg_cov,    0    ],
+            [  0    , avg_cov ]]
 
 # print(mu1,mu2,mu3)
 # print(avg_var_1, avg_var_2, avg_var_3)
