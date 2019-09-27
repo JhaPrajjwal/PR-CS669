@@ -22,6 +22,28 @@ def variance(data):
     
     return var
 
+def get_cov(data, mean, x, y):
+    t = 0
+    for i in range(len(data[0])):
+        t += (data[x][i]-mean[x]) * (data[y][i]-mean[y])
+    
+    t /= len(data[0])
+    return t
+
+def covariance_mat(data):
+    mu = mean(data)
+    conv = [[0,0],[0,0]]
+    # for i in range(len(data[0])):
+    #     for j in range(len(data[0])):
+    #         cov[i][j] = get_cov(data, mean, i, j)
+    conv[0][0] = get_cov(data, mu, 0, 0)
+    conv[1][1] = get_cov(data, mu, 1, 1)
+    conv[1][0] = get_cov(data, mu, 1, 0)
+    conv[0][1] = conv[1][0]
+    return conv
+
+
+
 def avg_var(data):
     var = variance(data)
     avg_variane = sum(var)/float(len(var))
@@ -32,7 +54,7 @@ def mat_inverse(arr):
     mat = np.array(arr)
     return np.linalg.inv(mat)
 
-def mat_mult(mat1, mat2):
+def mat_mul(mat1, mat2):
     a = np.array(mat1)
     b = np.array(mat2)
     return np.dot(a,b)
@@ -92,6 +114,5 @@ def recall(conf_matrix, j):
 def f_score(conf_matrix, i):
     P = precision(conf_matrix, i)
     R = recall(conf_matrix, i)
-
     return (2*P*R)/(P+R)
 

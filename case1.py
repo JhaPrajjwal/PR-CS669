@@ -126,7 +126,7 @@ conv_mat = [[avg_cov,    0    ],
 # print(avg_cov)
 
 for i in range(len(test1[0])):
-    out = classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,avg_cov)
+    out = classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,conv_mat)
     conf_mat[0][out] += 1
     if out == 0:
         class1[0].append(test1[0][i])
@@ -139,7 +139,7 @@ for i in range(len(test1[0])):
         class3[1].append(test1[1][i])
 
 for i in range(len(test2[0])):
-    out = classify([test2[0][i],test2[1][i]],mu1,mu2,mu3,avg_cov)
+    out = classify([test2[0][i],test2[1][i]],mu1,mu2,mu3,conv_mat)
     conf_mat[1][out] += 1
     if out == 0:
         class1[0].append(test2[0][i])
@@ -152,7 +152,7 @@ for i in range(len(test2[0])):
         class3[1].append(test2[1][i])
 
 for i in range(len(test3[0])):
-    out = classify([test3[0][i],test3[1][i]],mu1,mu2,mu3,avg_cov)
+    out = classify([test3[0][i],test3[1][i]],mu1,mu2,mu3,conv_mat)
     conf_mat[2][out] += 1
     if out == 0:
         class1[0].append(test3[0][i])
@@ -187,10 +187,10 @@ plt.figure()
 plt.scatter(class1[0],class1[1])
 plt.scatter(class2[0],class2[1])
 plt.scatter(class3[0],class3[1])
-plot_contour(mu1,avg_cov,test1[0],test1[1])
-plot_contour(mu2,avg_cov,test2[0],test2[1])
-plot_contour(mu3,avg_cov,test3[0],test3[1])
-decision_boundary(step,mu1,mu2,mu3,avg_cov)
+plot_contour(mu1,conv_mat,test1[0],test1[1])
+plot_contour(mu2,conv_mat,test2[0],test2[1])
+plot_contour(mu3,conv_mat,test3[0],test3[1])
+decision_boundary(step,mu1,mu2,mu3,conv_mat)
 plt.xlim(range_x[0],range_x[1])
 plt.ylim(range_y[0],range_y[1])
 plt.gca().set_aspect('equal', adjustable='box')
