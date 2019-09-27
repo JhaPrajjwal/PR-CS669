@@ -6,8 +6,24 @@ import numpy as np
 class1 = [[],[]]
 class2 = [[],[]]
 class3 = [[],[]]
+
+# Linearly Separable
 range_x = [-20,25]
 range_y = [-20,20]
+step = 0.05
+file = "./Data1/"
+# Non-Linearly Separable
+# range_x = [-5,5]
+# range_y = [-5,5]
+# step = 0.05
+# file = "./Data2/"
+# Real Data
+# range_x = [-1000,2500]
+# range_y = [0,3000]
+# step = 10
+# file = "./Data3/"
+
+conf_mat = [[0,0,0],[0,0,0],[0,0,0]]
 
 def classify(v, mu1, mu2, mu3, var):
     w1 = Ax.discriminant_func([v[0],v[1]], mu1, var)
@@ -34,9 +50,10 @@ def plot_contour(mu,var,x,y):
         max_x=max(max_x,x[i])
         max_y=max(max_y,y[i])
 
+    # print(min_x,min_y,max_x,max_y)
 
-    X=np.linspace(min_x,max_x,N)
-    Y=np.linspace(min_y,max_y,N)
+    X = np.linspace(min_x,max_x,N)
+    Y = np.linspace(min_y,max_y,N)
     X, Y = np.meshgrid(X, Y)
 
     Z = []
@@ -72,9 +89,9 @@ def decision_boundary(val,mu1,mu2,mu3,avg_cov):
             
 
    
-train1, test1 = data.get_data("./Data1/Class1.txt")
-train2, test2 = data.get_data("./Data1/Class2.txt")
-train3, test3 = data.get_data("./Data1/Class3.txt")
+train1, test1 = data.get_data(file +"Class1.txt")
+train2, test2 = data.get_data(file +"Class2.txt")
+train3, test3 = data.get_data(file +"Class3.txt")
 
 
 mu1 = Ax.mean(train1)
@@ -93,6 +110,7 @@ avg_cov = (avg_var_1 + avg_var_2 + avg_var_3)/3
 
 for i in range(len(test1[0])):
     out = classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,avg_cov)
+    conf_mat[0][out] += 1
     if out == 0:
         class1[0].append(test1[0][i])
         class1[1].append(test1[1][i])
@@ -105,6 +123,7 @@ for i in range(len(test1[0])):
 
 for i in range(len(test2[0])):
     out = classify([test2[0][i],test2[1][i]],mu1,mu2,mu3,avg_cov)
+    conf_mat[1][out] += 1
     if out == 0:
         class1[0].append(test2[0][i])
         class1[1].append(test2[1][i])
@@ -117,6 +136,7 @@ for i in range(len(test2[0])):
 
 for i in range(len(test3[0])):
     out = classify([test3[0][i],test3[1][i]],mu1,mu2,mu3,avg_cov)
+    conf_mat[2][out] += 1
     if out == 0:
         class1[0].append(test3[0][i])
         class1[1].append(test3[1][i])
@@ -127,9 +147,24 @@ for i in range(len(test3[0])):
         class3[0].append(test3[0][i])
         class3[1].append(test3[1][i])
 
- 
 
+for i in range(3):
+    for j in range(3):
+        print(conf_mat[i][j],end=" ")
+    print()
 
+print("Accuracy: ", Ax.accuracy(conf_mat))
+print("Precision for 1: ", Ax.precision(conf_mat,0))
+print("Precision for 2: ", Ax.precision(conf_mat,1))
+print("Precision for 3: ", Ax.precision(conf_mat,2))
+print("Recall for 1: ", Ax.recall(conf_mat,0))
+print("Recall for 2: ", Ax.recall(conf_mat,1))
+print("Recall for 3: ", Ax.recall(conf_mat,2))
+print("Mean Recall: ", (Ax.recall(conf_mat,0)+Ax.recall(conf_mat,1)+Ax.recall(conf_mat,2))/3)
+print("F-Score for 1: ", Ax.f_score(conf_mat,0))
+print("F-Score for 2: ", Ax.f_score(conf_mat,1))
+print("F-Score for 3: ", Ax.f_score(conf_mat,2))
+print("Mean F Score: ", (Ax.f_score(conf_mat,0)+Ax.f_score(conf_mat,1)+ Ax.f_score(conf_mat,2))/3)
 
 plt.figure()
 plt.scatter(class1[0],class1[1])
@@ -138,7 +173,7 @@ plt.scatter(class3[0],class3[1])
 plot_contour(mu1,avg_cov,test1[0],test1[1])
 plot_contour(mu2,avg_cov,test2[0],test2[1])
 plot_contour(mu3,avg_cov,test3[0],test3[1])
-decision_boundary(0.05,mu1,mu2,mu3,avg_cov)
+decision_boundary(step,mu1,mu2,mu3,avg_cov)
 plt.xlim(range_x[0],range_x[1])
 plt.ylim(range_y[0],range_y[1])
 plt.gca().set_aspect('equal', adjustable='box')
