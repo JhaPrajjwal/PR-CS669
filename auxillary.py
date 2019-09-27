@@ -1,4 +1,5 @@
 import math
+import numpy as np 
 
 # Function to Calculate mean
 def mean(data):
@@ -76,3 +77,12 @@ def f_score(conf_matrix, i):
     R = recall(conf_matrix, i)
 
     return (2*P*R)/(P+R)
+
+def mat_inverse(arr):
+    mat = np.array(arr)
+    return np.linalg.inv(mat)
+
+def mat_mult(mat1, mat2):
+    a = np.array(mat1)
+    b = np.array(mat2)
+    return np.dot(a,b)
