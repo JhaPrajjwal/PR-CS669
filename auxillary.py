@@ -93,7 +93,7 @@ def discriminant_func(v, mu, conv_mat, case):
         val1 = val1 + val2
         val1 = -val1/2
         val = val + val1
-        return val
+        return val[0][0]
 
 
 

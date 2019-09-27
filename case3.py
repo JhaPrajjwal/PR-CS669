@@ -16,10 +16,10 @@ range_y = []
 step = 0
 file = ""
 
-def classify(v, mu1, mu2, mu3, conv_mat):
-    w1 = Ax.discriminant_func([v[0],v[1]], mu1, conv_mat, case)
-    w2 = Ax.discriminant_func([v[0],v[1]], mu2, conv_mat, case)
-    w3 = Ax.discriminant_func([v[0],v[1]], mu3, conv_mat, case)
+def classify(v, mu1, mu2, mu3, conv_mat1,conv_mat2,conv_mat3):
+    w1 = Ax.discriminant_func([v[0],v[1]], mu1, conv_mat1, case)
+    w2 = Ax.discriminant_func([v[0],v[1]], mu2, conv_mat2, case)
+    w3 = Ax.discriminant_func([v[0],v[1]], mu3, conv_mat3, case)
 
     if w1 >= w2 and w1 >= w3:
         return 0
@@ -47,15 +47,18 @@ def plot_contour(mu,conv_mat,x,y):
     Y = np.linspace(min_y,max_y,N)
     X, Y = np.meshgrid(X, Y)
 
-    pos = np.empty(X.shape + (2,))
-    pos[:, :, 0] = X
-    pos[:, :, 1] = Y
-    Z = Ax.multivariate_gaussian(pos, mu, conv_mat)
+    Z = []
+    for i in range(len(X)):
+        temp = []
+        for j in range(len(X[0])):
+            temp.append(Ax.discriminant_func([X[i][j],Y[i][j]],mu,conv_mat,case))
+        Z.append(temp)
+    # print(Z.shape)
     plt.contour(X, Y, Z,zorder=100,alpha=0.5,colors=['black'])
 
 
 
-def decision_boundary(val,mu1,mu2,mu3,conv_mat):
+def decision_boundary(val,mu1,mu2,mu3,conv_mat1,conv_mat2,conv_mat3):
 
     points_x = [[],[],[]]
     points_y = [[],[],[]]
@@ -64,7 +67,7 @@ def decision_boundary(val,mu1,mu2,mu3,conv_mat):
     while start < float(range_x[1]):
         start_j = float(range_y[0])
         while start_j < float(range_y[1]):
-            out = classify([start, start_j], mu1, mu2, mu3, conv_mat)
+            out = classify([start, start_j], mu1, mu2, mu3, conv_mat1,conv_mat2,conv_mat3)
             points_x[out].append(start)
             points_y[out].append(start_j)
             start_j += val
@@ -114,14 +117,17 @@ conv_mat1 = Ax.covariance_mat(train1)
 conv_mat2 = Ax.covariance_mat(train2)
 conv_mat3 = Ax.covariance_mat(train3)
 
-conv_mat = [[0,0],[0,0]]
+# conv_mat = [[0,0],[0,0]]
 
 for i in range(2):
     for j in range(2):
-        conv_mat[i][j] = (conv_mat1[i][j]+conv_mat2[i][j]+conv_mat3[i][j])/3
+        if i!=j:
+            conv_mat1[i][j] = 0
+            conv_mat2[i][j] = 0
+            conv_mat3[i][j] = 0
 
 for i in range(len(test1[0])):
-    out = classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,conv_mat)
+    out = classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,conv_mat1)
     conf_mat[0][out] += 1
     if out == 0:
         class1[0].append(test1[0][i])
@@ -134,7 +140,7 @@ for i in range(len(test1[0])):
         class3[1].append(test1[1][i])
 
 for i in range(len(test2[0])):
-    out = classify([test2[0][i],test2[1][i]],mu1,mu2,mu3,conv_mat)
+    out = classify([test2[0][i],test2[1][i]],mu1,mu2,mu3,conv_mat2)
     conf_mat[1][out] += 1
     if out == 0:
         class1[0].append(test2[0][i])
@@ -147,7 +153,7 @@ for i in range(len(test2[0])):
         class3[1].append(test2[1][i])
 
 for i in range(len(test3[0])):
-    out = classify([test3[0][i],test3[1][i]],mu1,mu2,mu3,conv_mat)
+    out = classify([test3[0][i],test3[1][i]],mu1,mu2,mu3,conv_mat3)
     conf_mat[2][out] += 1
     if out == 0:
         class1[0].append(test3[0][i])
@@ -182,10 +188,10 @@ plt.figure()
 plt.scatter(class1[0],class1[1])
 plt.scatter(class2[0],class2[1])
 plt.scatter(class3[0],class3[1])
-# plot_contour(mu1,conv_mat,test1[0],test1[1])
-# plot_contour(mu2,conv_mat,test2[0],test2[1])
-# plot_contour(mu3,conv_mat,test3[0],test3[1])
-decision_boundary(step,mu1,mu2,mu3,conv_mat)
+plot_contour(mu1,conv_mat,test1[0],test1[1])
+plot_contour(mu2,conv_mat,test2[0],test2[1])
+plot_contour(mu3,conv_mat,test3[0],test3[1])
+decision_boundary(step,mu1,mu2,mu3,conv_mat1,conv_mat2,conv_mat3)
 plt.xlim(range_x[0],range_x[1])
 plt.ylim(range_y[0],range_y[1])
 plt.gca().set_aspect('equal', adjustable='box')
