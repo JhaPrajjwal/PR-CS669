@@ -7,23 +7,13 @@ class1 = [[],[]]
 class2 = [[],[]]
 class3 = [[],[]]
 
-# Linearly Separable
-range_x = [-20,25]
-range_y = [-20,20]
-step = 0.05
-file = "./Data1/"
-# Non-Linearly Separable
-# range_x = [-5,5]
-# range_y = [-5,5]
-# step = 0.05
-# file = "./Data2/"
-# Real Data
-# range_x = [-1000,2500]
-# range_y = [0,3000]
-# step = 10
-# file = "./Data3/"
-
 conf_mat = [[0,0,0],[0,0,0],[0,0,0]]
+
+# Real Data
+range_x = []
+range_y = []
+step = 0
+file = ""
 
 def classify(v, mu1, mu2, mu3, var):
     w1 = Ax.discriminant_func([v[0],v[1]], mu1, var)
@@ -86,8 +76,31 @@ def decision_boundary(val,mu1,mu2,mu3,avg_cov):
     plt.scatter(points_x[1],points_y[1],color="blue",zorder=-1)
     plt.scatter(points_x[2],points_y[2],color="green",zorder=-1)
 
-            
+print("Welcome. Enter the required option.")
+print("1. Linearly Separable")
+print("2. Non-Linearly Separable")
+print("3. Real World Data")
+choice = int(input())
 
+if choice==1:
+    # Linearly Separable
+    range_x = [-20,25]
+    range_y = [-20,20]
+    step = 0.05
+    file = "./Data1/"
+elif choice==2:
+    # Non-Linearly Separable
+    range_x = [-5,5]
+    range_y = [-5,5]
+    step = 0.05
+    file = "./Data2/"
+else:
+    # Real Data
+    range_x = [-1000,2500]
+    range_y = [0,3000]
+    step = 10
+    file = "./Data3/"
+    
    
 train1, test1 = data.get_data(file +"Class1.txt")
 train2, test2 = data.get_data(file +"Class2.txt")
