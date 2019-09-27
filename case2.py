@@ -123,7 +123,7 @@ for i in range(2):
     for j in range(2):
         conv_mat[i][j] = (conv_mat1[i][j]+conv_mat2[i][j]+conv_mat3[i][j])/3
 
-for i in range(len(test1[0])):
+or i in range(len(test1[0])):
     out = classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,conv_mat)
     conf_mat[0][out] += 1
     if out == 0:

@@ -76,6 +76,18 @@ def discriminant_func(v, mu, conv_mat, case):
         temp = [v[0]-mu[0], v[1]-mu[0]]
         return (-1 * mat_mul(mat_mul(temp, conv_mat), temp) ) / 2
 
+    inv = mat_inverse(conv_mat)
+    mean_np = np.asarray([mean])
+    meannpt = np.transpose(meannp)
+    x = np.array([v])
+    xt = np.transpose(x)
+    temp = np.dot(x,inv)
+    temp = np.dot(temp, xt)
+    val = temp[0][0]
+    val1 = -val/2
+    temp = np.dot(inv, np.transpose(meannp))
+    
+
 
 
 def accuracy(conf_matrix):
