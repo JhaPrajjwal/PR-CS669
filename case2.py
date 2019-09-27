@@ -47,13 +47,17 @@ def plot_contour(mu,conv_mat,x,y):
     Y = np.linspace(min_y,max_y,N)
     X, Y = np.meshgrid(X, Y)
 
-    Z = []
-    for i in range(len(X)):
-        temp = []
-        for j in range(len(X[0])):
-            temp.append(Ax.discriminant_func([X[i][j],Y[i][j]],mu,conv_mat,case)[0][0])
-        Z.append(temp)
+    # Z = []
+    # for i in range(len(X)):
+    #     temp = []
+    #     for j in range(len(X[0])):
+    #         temp.append(Ax.discriminant_func([X[i][j],Y[i][j]],mu,conv_mat,case)[0][0])
+    #     Z.append(temp)
     # print(Z.shape)
+    pos = np.empty(X.shape + (2,))
+    pos[:, :, 0] = X
+    pos[:, :, 1] = Y
+    Z = Ax.multivariate_gaussian(pos, mu, conv_mat)
     plt.contour(X, Y, Z,zorder=100,alpha=0.5,colors=['black'])
 
 
