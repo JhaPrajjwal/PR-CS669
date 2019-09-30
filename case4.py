@@ -9,6 +9,21 @@ class3 = [[],[]]
 
 conf_mat = [[0,0,0],[0,0,0],[0,0,0]]
 
+# def classify(v, mu1, mu2, mu3, cov_mat1,cov_mat2,cov_mat3):
+#     w1 = Ax.discriminant_func([v[0],v[1]], mu1, cov_mat1, case)
+#     w2 = Ax.discriminant_func([v[0],v[1]], mu2, cov_mat2, case)
+#     w3 = Ax.discriminant_func([v[0],v[1]], mu3, cov_mat3, case)
+
+#     if w1 >= w2 and w1 >= w3:
+#         return 0
+#     elif w2 >= w3 and w2 >= w1:
+#         return 1
+#     else:
+#         return 2
+
+
+
+
 def decision_boundary(val,mu1,mu2,mu3,cov_mat1,cov_mat2,cov_mat3):
 
     points_x = [[],[],[]]
@@ -24,7 +39,7 @@ def decision_boundary(val,mu1,mu2,mu3,cov_mat1,cov_mat2,cov_mat3):
             start_j += val
         start += val
 
-    plt.scatter(points_x[0],points_y[0],color="red",zorder=-1)
+    plt.scatter(points_x[0],points_y[0],color="pink",zorder=-1)
     plt.scatter(points_x[1],points_y[1],color="blue",zorder=-1)
     plt.scatter(points_x[2],points_y[2],color="green",zorder=-1)
 
@@ -68,14 +83,6 @@ cov_mat1 = Ax.covariance_mat(train1)
 cov_mat2 = Ax.covariance_mat(train2)
 cov_mat3 = Ax.covariance_mat(train3)
 
-# cov_mat = [[0,0],[0,0]]
-
-for i in range(2):
-    for j in range(2):
-        if i!=j:
-            cov_mat1[i][j] = 0
-            cov_mat2[i][j] = 0
-            cov_mat3[i][j] = 0
 
 for i in range(len(test1[0])):
     out = Ax.classify([test1[0][i],test1[1][i]],mu1,mu2,mu3,cov_mat1,cov_mat2,cov_mat3)
@@ -115,6 +122,7 @@ for i in range(len(test3[0])):
     else:
         class3[0].append(test3[0][i])
         class3[1].append(test3[1][i])
+
 
 Ax.call_metric(conf_mat)
 

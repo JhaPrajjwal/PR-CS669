@@ -69,31 +69,31 @@ def euclidean_norm(v, mu):
 
 def discriminant_func(v, mu, conv_mat, case):
 
-    if case == 1:
-        return (-1 * pow(euclidean_norm(v, mu), 2) ) / (2*conv_mat[0][0])
+    # if case == 1:
+    #     return (-1 * pow(euclidean_norm(v, mu), 2) ) / (2*conv_mat[0][0])
         
-    else:
-        inv = mat_inverse(conv_mat)
-        meannp = np.asarray([mu])
-        meannpt = np.transpose(meannp)
-        x = np.array([v])
-        xt = np.transpose(x)
-        temp = np.dot(x,inv)
-        temp = np.dot(temp, xt)
-        val = temp[0][0]
-        val1 = -val/2
+    # else:
+    inv = mat_inverse(conv_mat)
+    meannp = np.asarray([mu])
+    meannpt = np.transpose(meannp)
+    x = np.array([v])
+    xt = np.transpose(x)
+    temp = np.dot(x,inv)
+    temp = np.dot(temp, xt)
+    val = temp[0][0]
+    val1 = -val/2
         # print(inv.shape, meannpt.shape)
-        temp = np.dot(inv, np.transpose(meannp))
-        temp = np.transpose(temp)
-        temp = np.dot(temp, np.transpose(x))
-        val = val1 + temp
-        val1 = np.dot(meannp, inv)
-        val1 = np.dot(val1, meannpt)
-        val2 = math.log(np.linalg.det(conv_mat))
-        val1 = val1 + val2
-        val1 = -val1/2
-        val = val + val1
-        return val[0][0]
+    temp = np.dot(inv, np.transpose(meannp))
+    temp = np.transpose(temp)
+    temp = np.dot(temp, np.transpose(x))
+    val = val1 + temp
+    val1 = np.dot(meannp, inv)
+    val1 = np.dot(val1, meannpt)
+    val2 = math.log(np.linalg.det(conv_mat))
+    val1 = val1 + val2
+    val1 = -val1/2
+    val = val + val1
+    return val[0][0]
 
 
 
@@ -136,10 +136,6 @@ def f_score(conf_matrix, i):
     return (2*P*R)/(P+R)
 
 def multivariate_gaussian(pos, mu, Sigma):
-    """Return the multivariate Gaussian distribution on array pos.
-    pos is an array constructed by packing the meshed arrays of variables
-    x_1, x_2, x_3, ..., x_k into its _last_ dimension.
-    """
     n = len(mu)
     Sigma_det = det=(Sigma[0][0]*Sigma[1][1])-(Sigma[1][0]*Sigma[0][1])
     Sigma_inv = np.linalg.inv(Sigma)
@@ -148,3 +144,74 @@ def multivariate_gaussian(pos, mu, Sigma):
     # way across all the input variables.
     fac = np.einsum('...k,kl,...l->...', pos-mu, Sigma_inv, pos-mu)
     return np.exp(-fac / 2) / N
+
+
+def classify_(v, mu1, mu2, mu3, cov_mat):
+    case = 1
+    w1 = discriminant_func([v[0],v[1]], mu1, cov_mat, case)
+    w2 = discriminant_func([v[0],v[1]], mu2, cov_mat, case)
+    w3 = discriminant_func([v[0],v[1]], mu3, cov_mat, case)
+
+    if w1 >= w2 and w1 >= w3:
+        return 0
+    elif w2 >= w3 and w2 >= w1:
+        return 1
+    else:
+        return 2
+
+def classify(v, mu1, mu2, mu3, cov_mat1,cov_mat2,cov_mat3):
+    case = 1
+    w1 = discriminant_func([v[0],v[1]], mu1, cov_mat1, case)
+    w2 = discriminant_func([v[0],v[1]], mu2, cov_mat2, case)
+    w3 = discriminant_func([v[0],v[1]], mu3, cov_mat3, case)
+
+    if w1 >= w2 and w1 >= w3:
+        return 0
+    elif w2 >= w3 and w2 >= w1:
+        return 1
+    else:
+        return 2
+
+def plot_contour(mu,cov_mat,x,y,plt):
+    min_x = 100000000
+    min_y = 100000000
+    max_x = -100000000
+    max_y = -100000000
+    N = len(x)
+    for i in range(len(x)):
+        min_x=min(min_x,x[i])
+        min_y=min(min_y,y[i])
+        max_x=max(max_x,x[i])
+        max_y=max(max_y,y[i])
+
+    # print(min_x,min_y,max_x,max_y)
+
+    X = np.linspace(min_x,max_x,N)
+    Y = np.linspace(min_y,max_y,N)
+    X, Y = np.meshgrid(X, Y)
+
+    pos = np.empty(X.shape + (2,))
+    pos[:, :, 0] = X
+    pos[:, :, 1] = Y
+    Z = multivariate_gaussian(pos, mu, cov_mat)
+    plt.contour(X, Y, Z,zorder=100,alpha=0.5,colors=['black'])
+
+
+def call_metric(conf_mat):
+    for i in range(3):
+        for j in range(3):
+            print(conf_mat[i][j],end=" ")
+        print()
+
+    print("Accuracy: ", accuracy(conf_mat))
+    print("Precision for 1: ", precision(conf_mat,0))
+    print("Precision for 2: ", precision(conf_mat,1))
+    print("Precision for 3: ", precision(conf_mat,2))
+    print("Recall for 1: ", recall(conf_mat,0))
+    print("Recall for 2: ", recall(conf_mat,1))
+    print("Recall for 3: ", recall(conf_mat,2))
+    print("Mean Recall: ", (recall(conf_mat,0)+recall(conf_mat,1)+recall(conf_mat,2))/3)
+    print("F-Score for 1: ", f_score(conf_mat,0))
+    print("F-Score for 2: ", f_score(conf_mat,1))
+    print("F-Score for 3: ", f_score(conf_mat,2))
+    print("Mean F Score: ", (f_score(conf_mat,0)+f_score(conf_mat,1)+f_score(conf_mat,2))/3)
