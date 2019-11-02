@@ -67,9 +67,8 @@ def cluster(K, data, centroids, iter):
     
     plt.figure()
     plt.style.use('ggplot')
-    plt.scatter(classes[0][0],classes[0][1],color="blue")
-    plt.scatter(classes[1][0],classes[1][1],color="red")
-    plt.scatter(classes[2][0],classes[2][1],color="green")
+    for i in range(len(classes)):
+        plt.scatter(classes[i][0],classes[i][1])
 
     for i in range(K):
         plt.plot([centroids[i][0]], [centroids[i][1]], marker='o', markersize=10, color="black")
@@ -90,41 +89,16 @@ def kmeans(K, iterations, number_of_points, data, centroids, closest_centroid, t
         E_step.append(assign(K, number_of_points, data, centroids, closest_centroid))
         M_step.append(update(K, number_of_points, data, centroids, closest_centroid))
         X_axis.append(i+1)
-        # print(centroids)
-        # print(closest_centroid)
         cluster(K, test, centroids, i)
 
     return E_step, M_step, X_axis
 
-def metrics(K, data, label, centroids):
-    conf_mat = []
-    for i in range(K):
-        conf_mat.append([0,0,0])
-
-    for i in range(len(data)):
-        val, ind = closest_centroid_cost(K, i, data, centroids)
-        conf_mat[label[i]][(ind+1)%3] += 1
-
-    for i in range(K):
-        for j in range(K):
-            print(conf_mat[i][j],end=" ")
-        print()
-
-    cnt = 0
-    neg = 0
-    for i in range(K):
-        for j in range(K):
-            cnt += conf_mat[i][j]
-            if i != j:
-                neg += conf_mat[i][j]
-    print("Accuracy: ", ((cnt-neg)/float(cnt))*100)
-
 
 if __name__ == '__main__':
 
-    data, test_data, test_label = D.get_data("./Data1/")
-    K = 3
-    iterations = 10
+    data, test_data, test_label = D.get_data("./Data2/")
+    K = 7
+    iterations = 20
     number_of_points = len(data)
 
     centroids = data[:K]
@@ -140,7 +114,5 @@ if __name__ == '__main__':
     plt.savefig('plots/cost.png')
     
     cluster(K, test_data, centroids, -1)
-    metrics(K, test_data, test_label, centroids)
-
 
 

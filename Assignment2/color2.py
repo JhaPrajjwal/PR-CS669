@@ -4,9 +4,10 @@ import math
 import random
 from PIL import Image
 from copy import deepcopy
+
 K = 20
 
-img = Image.open('original1.jpg')
+img = Image.open('image.jpg')
 data = np.array(img)
 out_img = data
 mean = np.random.randint(low=0, high=255, size=(K,5))
@@ -17,10 +18,10 @@ def euclidean_distance(sample, mean):
     d += pow(sample[3]-mean[3],2) + pow(sample[4]-mean[4],2)
     return d
 
-precost=10000000000000000000000000000000
-cost=1000000000000000000000000000000
+precost = 10000000000000000000000000000000
+cost = 1000000000000000000000000000000
 ptr=1
-while cost < precost:
+while abs(cost-precost) > 0.001:
     precost = cost
     cluster_no = np.zeros(shape=(data.shape[0], data.shape[1]), dtype=int)
     for i in range(data.shape[0]):
