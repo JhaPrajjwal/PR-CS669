@@ -4,7 +4,7 @@ import math
 import random
 from PIL import Image
 
-K = 20
+K = 10
 
 img = Image.open('image.jpg')
 data = np.array(img)
@@ -23,7 +23,7 @@ ptr = 1
 while abs(cost-precost) > 0.001:
     precost = cost
     cluster_no = np.zeros(shape=(data.shape[0], data.shape[1]), dtype=int)
-    
+
     for i in range(data.shape[0]):
         for j in range(data.shape[1]):
             minimum = 100000000

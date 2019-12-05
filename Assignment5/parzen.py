@@ -150,12 +150,12 @@ if __name__ == '__main__':
     print("Precision for class 1: ", U.precision(conf_mat, 0))
     print("Precision for class 2: ", U.precision(conf_mat, 1))
     print("Precision for class 3: ", U.precision(conf_mat, 2))
-    print("Recall for class 1: ", U.precision(conf_mat, 0))
-    print("Recall for class 2: ", U.precision(conf_mat, 1))
-    print("Recall for class 3: ", U.precision(conf_mat, 2))
-    print("F-Score for class 1: ", U.precision(conf_mat, 0))
-    print("F-Score for class 2: ", U.precision(conf_mat, 1))
-    print("F-Score for class 3: ", U.precision(conf_mat, 2))
+    print("Recall for class 1: ", U.recall(conf_mat, 0))
+    print("Recall for class 2: ", U.recall(conf_mat, 1))
+    print("Recall for class 3: ", U.recall(conf_mat, 2))
+    print("F-Score for class 1: ", U.f_score(conf_mat, 0))
+    print("F-Score for class 2: ", U.f_score(conf_mat, 1))
+    print("F-Score for class 3: ", U.f_score(conf_mat, 2))
 
 
 

@@ -1,4 +1,3 @@
-import struct as st
 import os
 import numpy as np
 import random
@@ -10,8 +9,8 @@ import idx2numpy
 def add_noise(Data, level):
 
     for i in range(len(Data)):
-        noise = np.random.normal(10, 10, 28*28)
-        Data[i] = np.add(Data[i], float(level)*noise)
+        noise = np.random.normal(10,10, 28*28)
+        Data[i] = np.add((Data[i]) , float(level)*noise)
     return Data
 
 
@@ -25,6 +24,16 @@ def pca(data, cnt):
     Eigen_vals, Eigen_vecs = LA.eig(cov_mat)
     Eigen_vals = np.real(Eigen_vals)
     Eigen_vecs = np.real(Eigen_vecs)
+
+    suff = [0 for i in range(len(Eigen_vals))]
+    suff[len(Eigen_vals)-1] = Eigen_vals[len(Eigen_vals)-1]
+
+    for i in range(len(Eigen_vals)-2,-1,-1):
+        suff[i] = suff[i+1] + Eigen_vals[i]
+
+    x_axis = [i+1 for i in range(len(Eigen_vals))]
+    # plt.plot(x_axis, suff)
+    # plt.show()
     # print(Eigen_vecs.shape, Eigen_vals.shape)
 
     temp = []
@@ -40,22 +49,20 @@ def pca(data, cnt):
     cnt += 1
 
     Eigen_clip = []
-    for i in range(10):
+    for i in range(5):
         Eigen_clip.append(temp[i][1])
 
 
     Eigen_clip = np.asarray(Eigen_clip)
-    img = np.reshape(Eigen_clip[0,:],(28,28))
     Eigen_clip = np.transpose(Eigen_clip)
     y = np.dot(Data,Eigen_clip)
     Eigen_clip_t = np.transpose(Eigen_clip)
-    # print(y.shape)
-    # print(Eigen_clip_t.shape)
     y = np.dot(y, Eigen_clip_t)
+    print(y)
 
     img = np.reshape(y[0,:],(28,28))
     fig.add_subplot(2,2, cnt)
-    plt.imshow(img,'gray')
+    plt.imshow(np.clip(img,0,255),'gray')
     cnt += 1
 
 

@@ -5,7 +5,7 @@ import random
 from PIL import Image
 from copy import deepcopy
 
-K = 20
+K = 6
 
 img = Image.open('image.jpg')
 data = np.array(img)

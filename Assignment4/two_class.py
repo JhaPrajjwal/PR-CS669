@@ -1,6 +1,7 @@
 import data as D
 import matplotlib.pyplot as plt
 import numpy as np
+import utils as U
 import os
 import warnings
 warnings.simplefilter("ignore")
@@ -87,15 +88,32 @@ def perceptron(w, x1, x2, alpha, iterations):
 if __name__ == '__main__':
     x1 = D.get_data('Data1/Class3.txt')
     x2 = D.get_data('Data1/Class2.txt')
-
+    x1_train, x1_test = U.split(x1, 0.1)
+    x2_train, x2_test = U.split(x1, 0.1)
     if not os.path.isdir("plots"):
         os.mkdir("plots")
 
-    w = [-200.0,200.0,-200.0]
+    w = [-0.1,0.1,-0.1]
     print(w)
 
     # perceptron(w, x1, x2, 0.7, 5)
-    perceptron(w, x1, x2, 0.3, 20)
+    perceptron(w, x1_train, x2_train, 0.3, 20)
+
+    conf_mat = [[0,0],[0,0]]
+    for i in range(len(x1_test)):
+        val = dot(w, x1_test[i])
+        if val<0:
+            conf_mat[0][1] += 1
+        else:
+            conf_mat[0][0] += 1
+    
+    for i in range(len(x2_test)):
+        val = dot(w, x1_test[i])
+        if val>0:
+            conf_mat[1][0] += 1
+        else:
+            conf_mat[1][1] += 1
+    print(conf_mat)
     # providing such low alpha as the algo is learning too fast
     # to show gradual formation of decision surface keep alpha low(0.3) and iteration around(20)
     # alpha 0.1 and iterations 40 saved

@@ -14,8 +14,8 @@ def add(w, x, y):
         w[i] = w[i] + y*x[i]
 
 def decision_boundary(plt, w1, w2, w3):
-    range_x = [-15,25]
-    range_y = [-20,20]
+    range_x = [-3, +3]
+    range_y = [-3, +3]
     points_x = [[],[],[]]
     points_y = [[],[],[]]
 
@@ -79,7 +79,7 @@ def perceptron(w, x, y, z, alpha, iterations, cur):
 
     plt.figure()
     plt.plot(iter_, cost, color='green')
-    plt.savefig('plots_multi/cost_' + str(cur) + '.png')
+    plt.savefig('plots_perceptron/cost_' + str(cur) + '.png')
 
 def get_conf(x1, x2, x3, w1, w2, w3,plt):
     points_x = [[],[],[]]
@@ -150,25 +150,28 @@ def get_conf(x1, x2, x3, w1, w2, w3,plt):
 
         
 if __name__ == '__main__':
-    x1 = D.get_data('Data1/Class1.txt')
-    x2 = D.get_data('Data1/Class2.txt')
-    x3 = D.get_data('Data1/Class3.txt')
+    x1 = D.get_data_('Data/Class1.txt')
+    x2 = D.get_data_('Data/Class2.txt')
+    x3 = D.get_data_('Data/Class3.txt')
 
-    if not os.path.isdir("plots_multi"):
-        os.mkdir("plots_multi")
+    if not os.path.isdir("plots_perceptron"):
+        os.mkdir("plots_perceptron")
 
-    w1 = [200.0,-200.0,200.0]
-    w2 = [-200.0,200.0,200.0]
-    w3 = [200.0,200.0,-200.0]
+    # w1 = [200.0,-200.0,200.0]
+    # w2 = [-200.0,200.0,200.0]
+    # w3 = [200.0,200.0,-200.0]
+    w1 = [1.0,1.0,1.0]
+    w2 = [1.0,1.0,1.0]
+    w3 = [1.0,1.0,1.0]
 
-    perceptron(w1, x1, x2, x3, 0.5, 100, 1)
-    perceptron(w2, x2, x3, x1, 0.5, 100, 2)
-    perceptron(w3, x3, x1, x2, 0.5, 100, 3)
+    perceptron(w1, x1, x2, x3, 1, 500, 1)
+    perceptron(w2, x2, x3, x1, 1, 500, 2)
+    perceptron(w3, x3, x1, x2, 1, 500, 3)
 
     plt.figure()
     decision_boundary(plt, w1, w2, w3)
     conf_mat = get_conf(x1,x2,x3,w1,w2,w3,plt)
-    plt.savefig('plots_multi/decision_boundary.png')
+    plt.savefig('plots_perceptron/decision_boundary.png')
 
     print(conf_mat)
     print("Accuracy: ", U.accuracy(conf_mat))
